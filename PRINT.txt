@@ -1,0 +1,87 @@
+vsi VLAN2105-VSI-316447-IPF-00
+ pwsignal bgp
+  route-distinguisher 28198:105
+  vpn-target 28198:105 import-extcommunity
+  vpn-target 28198:105 export-extcommunity
+  site 1 range 3 default-offset 1
+
+interface Eth-Trunk0.2505
+ description VL2505-VSI-BET-GUA-01-GPON-002
+ ipv6 enable
+ ipv6 address auto link-local
+ statistic enable
+ user-vlan 10 12 qinq 2505
+ user-vlan 200 2003 qinq 2505
+ user-vlan 2005 qinq 2505
+ pppoe-server bind Virtual-Template 1
+ ipv6 nd autoconfig managed-address-flag
+ ipv6 nd autoconfig other-flag
+ bas
+ #
+  access-type layer2-subscriber default-domain authentication sempreinternet
+ #
+#
+
+
+
+###Comando a Executar no primeiro Switch
+
+vsi [service_name]
+ pwsignal bgp
+  route-distinguisher 28198:[route_distinguinsher]
+  vpn-target 28198:[route_distinguinsher] import-extcommunity
+  vpn-target 28198:[route_distinguinsher] export-extcommunity
+  site [site] range [range] default-offset 1
+
+
+interface [interface].[vlan]
+description [service_name]
+qinq stacking vid [CEVLAN] pe-vid [VLAN]
+qinq stacking vid [CEVLAN] pe-vid [VLAN]
+qinq stacking vid [CEVLAN] pe-vid [VLAN]
+qinq stacking vid [CEVLAN] pe-vid [VLAN]
+l2 binding vsi [service_name]
+
+
+### Comando a executar no primeiro Switch com F1A
+
+vsi [service_name]
+ pwsignal bgp
+  route-distinguisher 28198:[route_distinguinsher]
+  vpn-target 28198:[route_distinguinsher] import-extcommunity
+  vpn-target 28198:[route_distinguinsher] export-extcommunity
+  site [site] range [range] default-offset 1
+
+vlan [vlan]
+description [service_name]
+quit
+
+interface vlanif [vlan]
+description [service_name]
+l2 binding vsi [service_name]
+
+interface [interface_pppoe]
+port hybryd tagged vlan [VLAN] or port trunk allow pass vlan [VLAN]
+
+
+### Comando a executar no primeiro F1A
+
+interface Eth-Trunk0.[VLAN]
+ description [service_name]
+ ipv6 enable
+ ipv6 address auto link-local
+ statistic enable
+ commit
+ user-vlan [CEVLAN] qinq [VLAN]
+ user-vlan [CEVLAN] qinq [VLAN]
+ user-vlan [CEVLAN] qinq [VLAN]
+ quit
+ pppoe-server bind Virtual-Template 1
+ ipv6 nd autoconfig managed-address-flag
+ ipv6 nd autoconfig other-flag
+ commit
+ bas
+ #
+  access-type layer2-subscriber default-domain authentication sempreinternet
+ #
+#
