@@ -1,0 +1,135 @@
+---------- PRIMEIRO SWITCH ----------
+vsi VL3000-VSI-12-PML-001
+ pwsignal bgp
+  route-distinguisher 28198:03000
+  vpn-target 28198:03000 import-extcommunity
+  vpn-target 28198:03000 export-extcommunity
+  site 1 range 5 default-offset 1
+
+
+interface XGigabitEthernet 0/0/5.3000
+    description VL3000-VSI-12-PML-001
+ qinq stacking vid 101 pe-vid 3000
+ qinq stacking vid 100 pe-vid 3000
+ qinq stacking vid 102 pe-vid 3000
+ l2 binding vsi VL3000-VSI-12-PML-001
+
+---------- SEGUNDO SWITCH ----------
+vsi VL3000-VSI-12-PML-001
+ pwsignal bgp
+  route-distinguisher 28198:03000
+  vpn-target 28198:03000 import-extcommunity
+  vpn-target 28198:03000 export-extcommunity
+  site 2 range 5 default-offset 1
+
+vlan 3000
+description VL3000-VSI-12-PML-001
+quit
+
+interface vlanif 3000
+description VL3000-VSI-12-PML-001
+l2 binding vsi VL3000-VSI-12-PML-001
+
+interface Eth-Trunk6
+port trunk allow pass vlan 3000
+
+---------- PRIMEIRO F1A ----------
+interface Eth-Trunk0.3000
+ description VL3000-VSI-12-PML-001
+ ipv6 enable
+ ipv6 address auto link-local
+ statistic enable
+ commit
+ user-vlan 101 qinq 3000
+ user-vlan 100 qinq 3000
+ user-vlan 102 qinq 3000
+quit
+ pppoe-server bind Virtual-Template 1
+ ipv6 nd autoconfig managed-address-flag
+ ipv6 nd autoconfig other-flag
+ commit
+ bas
+ #
+  access-type layer2-subscriber default-domain authentication sempreinternet
+ #
+#
+---------- SEGUNDO SWITCH COM F1A ----------
+vsi VL3000-VSI-12-PML-001
+ pwsignal bgp
+  route-distinguisher 28198:03000
+  vpn-target 28198:03000 import-extcommunity
+  vpn-target 28198:03000 export-extcommunity
+  site 4 range 5 default-offset 1
+
+vlan 3000
+description VL3000-VSI-12-PML-001
+quit
+
+interface vlanif 3000
+description VL3000-VSI-12-PML-001
+l2 binding vsi VL3000-VSI-12-PML-001
+
+interface Eth-Trunk15
+port hybrid tagged vlan 3000
+
+---------- SEGUNDO F1A CEM-TLP-01-BNG-009 ----------
+interface Eth-Trunk0.3000
+ description VL3000-VSI-12-PML-001
+ ipv6 enable
+ ipv6 address auto link-local
+ statistic enable
+ commit
+ user-vlan 101 qinq 3000
+ user-vlan 100 qinq 3000
+ user-vlan 102 qinq 3000
+quit
+ pppoe-server bind Virtual-Template 1
+ ipv6 nd autoconfig managed-address-flag
+ ipv6 nd autoconfig other-flag
+ commit
+ bas
+ #
+  access-type layer2-subscriber default-domain authentication sempreinternet
+  access-delay 100
+ #
+#
+---------- TERCEIRO SWITCH COM F1A ----------
+vsi VL3000-VSI-12-PML-001
+ pwsignal bgp
+  route-distinguisher 28198:03000
+  vpn-target 28198:03000 import-extcommunity
+  vpn-target 28198:03000 export-extcommunity
+  site 4 range 5 default-offset 1
+
+vlan 3000
+description VL3000-VSI-12-PML-001
+quit
+
+interface vlanif 3000
+description VL3000-VSI-12-PML-001
+l2 binding vsi VL3000-VSI-12-PML-001
+
+interface Eth-Trunk2
+port trunk allow pass vlan 3000
+
+---------- TERCEIRO F1A PDS-JARF-01-BNG-007 ----------
+interface Eth-Trunk0.3000
+ description VL3000-VSI-12-PML-001
+ ipv6 enable
+ ipv6 address auto link-local
+ statistic enable
+ commit
+ user-vlan 101 qinq 3000
+ user-vlan 100 qinq 3000
+ user-vlan 102 qinq 3000
+quit
+ pppoe-server bind Virtual-Template 1
+ ipv6 nd autoconfig managed-address-flag
+ ipv6 nd autoconfig other-flag
+ commit
+ bas
+ #
+  access-type layer2-subscriber default-domain authentication sempreinternet
+  access-delay 100
+ #
+#
