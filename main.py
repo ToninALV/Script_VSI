@@ -65,7 +65,7 @@ def connect_equipament(command):
         ssh.connect(host, port=port, username=username, password=password)
         print("----- PESQUISANDO ROUTE DISTINGUISHER -----")
     except:
-        print("*****CONEXÃO NÃO ESTABELECIDA*****")
+        print("**CONEXÃO NÃO ESTABELECIDA**")
 
 
     stdin, stdout, stderr = ssh.exec_command(command)
@@ -80,7 +80,7 @@ def connect_equipament(command):
 
 
 def get_route_distinguisher(vlan):
-    for i in range(100):
+    for i in range(1,100):
         
         command = f"""display bgp l2vpn-ad routing-table vpls route-distinguisher {i}{vlan}\n"""
         result = connect_equipament(command)
@@ -157,13 +157,14 @@ def menu (host):
             interface_type_tertiary = "trunk"
             print(f"Você selecionou {hostname[5]}!")
         case 7: #LAGOA DA PRATA#
-            interface_pppoe = ""
-            interface_type = ""
+            interface_pppoe = "Eth-Trunk2"
+            interface_type = "trunk"
             conc_secondary = "PDS-JARF-01-BNG-009"
             interface_pppoe_secondary = "Eth-Trunk2"
             interface_type_secondary = "trunk"
             conc_tertiary = "DVL-VSA-01-BNG-014"
-            interface_pppoe_tertiary= "hybrid"
+            interface_pppoe_tertiary = "Eth-Trunk2"
+            interface_type_tertiary = "hybrid"
             print(f"Você selecionou {hostname[6]}!")
         case 8: #PERDÕES#
             interface_pppoe = "Eth-Trunk2"
@@ -206,13 +207,15 @@ def main():
     service_name = f"VL{pevlan}-VSI-{service_name}"
 
     interface = input("Qual a interface? ")
-    speed_interface = int(input("Qual a modulação da Interface? (1G/10G/100G) "))
+    speed_interface = int(input("Qual a modulação da Interface? (1G/10G/100G/eth) "))
     if speed_interface == 1:
         interface = f"GigabitEthernet 0/0/{interface}"
     elif speed_interface == 10:
         interface = f"XGigabitEthernet 0/0/{interface}"
     elif speed_interface == 100:
         interface = f"100GE 0/0/{interface}"
+    elif speed_interface == "eth":
+         interface = f"Eth-trunk{interface}"
     else:
         pass
 
@@ -430,12 +433,3 @@ interface {interface_pppoe_tertiary}"""
 
 main()
 print("----- SCRIPT FINALIZADO -----")
-
-
-
-
-
-
-
-
-
