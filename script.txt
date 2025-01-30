@@ -1,0 +1,127 @@
+---------- PRIMEIRO SWITCH ----------
+vsi VL2743-VSI-SAJ-MOR-01-RADIOS
+ pwsignal bgp
+  route-distinguisher 28198:12743
+  vpn-target 28198:12743 import-extcommunity
+  vpn-target 28198:12743 export-extcommunity
+  site 1 range 5 default-offset 1
+
+
+interface XGigabitEthernet 0/0/4.2743
+    description VL2743-VSI-SAJ-MOR-01-RADIOS
+ qinq stacking vid 636 pe-vid 2743
+ l2 binding vsi VL2743-VSI-SAJ-MOR-01-RADIOS
+
+---------- SEGUNDO SWITCH ----------
+vsi VL2743-VSI-SAJ-MOR-01-RADIOS
+ pwsignal bgp
+  route-distinguisher 28198:12743
+  vpn-target 28198:12743 import-extcommunity
+  vpn-target 28198:12743 export-extcommunity
+  site 2 range 5 default-offset 1
+
+vlan 2743
+description VL2743-VSI-SAJ-MOR-01-RADIOS
+quit
+
+interface vlanif 2743
+description VL2743-VSI-SAJ-MOR-01-RADIOS
+l2 binding vsi VL2743-VSI-SAJ-MOR-01-RADIOS
+
+interface Eth-Trunk2
+port trunk allow pass vlan 2743
+
+---------- PRIMEIRO F1A ----------
+interface Eth-Trunk0.2743
+ description VL2743-VSI-SAJ-MOR-01-RADIOS
+ ipv6 enable
+ ipv6 address auto link-local
+ statistic enable
+ commit
+ user-vlan 636 qinq 2743
+quit
+ pppoe-server bind Virtual-Template 1
+ ipv6 nd autoconfig managed-address-flag
+ ipv6 nd autoconfig other-flag
+ commit
+ bas
+ #
+  access-type layer2-subscriber default-domain authentication sempreinternet
+ #
+#
+---------- SEGUNDO SWITCH COM F1A ----------
+vsi VL2743-VSI-SAJ-MOR-01-RADIOS
+ pwsignal bgp
+  route-distinguisher 28198:12743
+  vpn-target 28198:12743 import-extcommunity
+  vpn-target 28198:12743 export-extcommunity
+  site 4 range 5 default-offset 1
+
+vlan 2743
+description VL2743-VSI-SAJ-MOR-01-RADIOS
+quit
+
+interface vlanif 2743
+description VL2743-VSI-SAJ-MOR-01-RADIOS
+l2 binding vsi VL2743-VSI-SAJ-MOR-01-RADIOS
+
+interface 
+port trunk allow pass vlan 27432743
+
+---------- SEGUNDO F1A LPT-CEN-01-BNG-004 ----------
+interface Eth-Trunk0.2743
+ description VL2743-VSI-SAJ-MOR-01-RADIOS
+ ipv6 enable
+ ipv6 address auto link-local
+ statistic enable
+ commit
+ user-vlan 636 qinq 2743
+quit
+ pppoe-server bind Virtual-Template 1
+ ipv6 nd autoconfig managed-address-flag
+ ipv6 nd autoconfig other-flag
+ commit
+ bas
+ #
+  access-type layer2-subscriber default-domain authentication sempreinternet
+  access-delay 100
+ #
+#
+---------- TERCEIRO SWITCH COM F1A ----------
+vsi VL2743-VSI-SAJ-MOR-01-RADIOS
+ pwsignal bgp
+  route-distinguisher 28198:12743
+  vpn-target 28198:12743 import-extcommunity
+  vpn-target 28198:12743 export-extcommunity
+  site 4 range 5 default-offset 1
+
+vlan 2743
+description VL2743-VSI-SAJ-MOR-01-RADIOS
+quit
+
+interface vlanif 2743
+description VL2743-VSI-SAJ-MOR-01-RADIOS
+l2 binding vsi VL2743-VSI-SAJ-MOR-01-RADIOS
+
+interface Eth-Trunk2
+port hybrid tagged vlan 2743
+
+---------- TERCEIRO F1A DVL-VSA-01-BNG-014 ----------
+interface Eth-Trunk0.2743
+ description VL2743-VSI-SAJ-MOR-01-RADIOS
+ ipv6 enable
+ ipv6 address auto link-local
+ statistic enable
+ commit
+ user-vlan 636 qinq 2743
+quit
+ pppoe-server bind Virtual-Template 1
+ ipv6 nd autoconfig managed-address-flag
+ ipv6 nd autoconfig other-flag
+ commit
+ bas
+ #
+  access-type layer2-subscriber default-domain authentication sempreinternet
+  access-delay 100
+ #
+#

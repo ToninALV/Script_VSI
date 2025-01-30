@@ -274,7 +274,7 @@ l2 binding vsi {service_name}
 
 interface {interface_pppoe}"""
     if interface_type == "trunk":
-        port_line = "port trunk allow pass vlan "
+        port_line = "port trunk allow-pass vlan "
     elif interface_type == "hybrid":
         port_line = "port hybrid tagged vlan "
     else:
@@ -332,7 +332,7 @@ l2 binding vsi {service_name}
 
 interface {interface_pppoe_secondary}"""
     if interface_type_secondary == "trunk":
-        port_line = "port trunk allow pass vlan "
+        port_line = "port trunk allow-pass vlan "
     elif interface_type_secondary == "hybrid":
         port_line = "port hybrid tagged vlan "
     else:
@@ -391,7 +391,7 @@ l2 binding vsi {service_name}
 
 interface {interface_pppoe_tertiary}"""
     if interface_type_tertiary == "trunk":
-        port_line = "port trunk allow pass vlan "
+        port_line = "port trunk allow-pass vlan "
     elif interface_type_tertiary == "hybrid":
         port_line = "port hybrid tagged vlan "
     else:
