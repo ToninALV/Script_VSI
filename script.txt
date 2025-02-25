@@ -1,44 +1,44 @@
 ---------- PRIMEIRO SWITCH ----------
-vsi VL2742-VSI-CPO-LAT-01-RADIOS
+vsi VL2835-VSI-AJS-PTOR-02-RADIOS
  pwsignal bgp
-  route-distinguisher 28198:12742
-  vpn-target 28198:12742 import-extcommunity
-  vpn-target 28198:12742 export-extcommunity
+  route-distinguisher 28198:12835
+  vpn-target 28198:12835 import-extcommunity
+  vpn-target 28198:12835 export-extcommunity
   site 1 range 5 default-offset 1
 
 
-interface XGigabitEthernet 0/0/4.2742
-    description VL2742-VSI-CPO-LAT-01-RADIOS
- qinq stacking vid 3110 pe-vid 2742
- l2 binding vsi VL2742-VSI-CPO-LAT-01-RADIOS
+interface XGigabitEthernet 0/0/11.2835
+    description VL2835-VSI-AJS-PTOR-02-RADIOS
+ qinq stacking vid 1003 pe-vid 2835
+ l2 binding vsi VL2835-VSI-AJS-PTOR-02-RADIOS
 
 ---------- SEGUNDO SWITCH ----------
-vsi VL2742-VSI-CPO-LAT-01-RADIOS
+vsi VL2835-VSI-AJS-PTOR-02-RADIOS
  pwsignal bgp
-  route-distinguisher 28198:12742
-  vpn-target 28198:12742 import-extcommunity
-  vpn-target 28198:12742 export-extcommunity
+  route-distinguisher 28198:12835
+  vpn-target 28198:12835 import-extcommunity
+  vpn-target 28198:12835 export-extcommunity
   site 2 range 5 default-offset 1
 
-vlan 2742
-description VL2742-VSI-CPO-LAT-01-RADIOS
+vlan 2835
+description VL2835-VSI-AJS-PTOR-02-RADIOS
 quit
 
-interface vlanif 2742
-description VL2742-VSI-CPO-LAT-01-RADIOS
-l2 binding vsi VL2742-VSI-CPO-LAT-01-RADIOS
+interface vlanif 2835
+description VL2835-VSI-AJS-PTOR-02-RADIOS
+l2 binding vsi VL2835-VSI-AJS-PTOR-02-RADIOS
 
-interface Eth-Trunk2
-port trunk allow-pass vlan 2742
+interface Eth-Trunk6
+port trunk allow-pass vlan 2835
 
 ---------- PRIMEIRO F1A ----------
-interface Eth-Trunk0.2742
- description VL2742-VSI-CPO-LAT-01-RADIOS
+interface Eth-Trunk0.2835
+ description VL2835-VSI-AJS-PTOR-02-RADIOS
  ipv6 enable
  ipv6 address auto link-local
  statistic enable
  commit
- user-vlan 3110 qinq 2742
+ user-vlan 1003 qinq 2835
 quit
  pppoe-server bind Virtual-Template 1
  ipv6 nd autoconfig managed-address-flag
@@ -50,32 +50,32 @@ quit
  #
 #
 ---------- SEGUNDO SWITCH COM F1A ----------
-vsi VL2742-VSI-CPO-LAT-01-RADIOS
+vsi VL2835-VSI-AJS-PTOR-02-RADIOS
  pwsignal bgp
-  route-distinguisher 28198:12742
-  vpn-target 28198:12742 import-extcommunity
-  vpn-target 28198:12742 export-extcommunity
+  route-distinguisher 28198:12835
+  vpn-target 28198:12835 import-extcommunity
+  vpn-target 28198:12835 export-extcommunity
   site 4 range 5 default-offset 1
 
-vlan 2742
-description VL2742-VSI-CPO-LAT-01-RADIOS
+vlan 2835
+description VL2835-VSI-AJS-PTOR-02-RADIOS
 quit
 
-interface vlanif 2742
-description VL2742-VSI-CPO-LAT-01-RADIOS
-l2 binding vsi VL2742-VSI-CPO-LAT-01-RADIOS
+interface vlanif 2835
+description VL2835-VSI-AJS-PTOR-02-RADIOS
+l2 binding vsi VL2835-VSI-AJS-PTOR-02-RADIOS
 
-interface Eth-Trunk2
-port trunk allow-pass vlan 2742
+interface Eth-Trunk15
+port hybrid tagged vlan 2835
 
----------- SEGUNDO F1A LPT-CEN-01-BNG-004 ----------
-interface Eth-Trunk0.2742
- description VL2742-VSI-CPO-LAT-01-RADIOS
+---------- SEGUNDO F1A CEM-TLP-01-BNG-009 ----------
+interface Eth-Trunk0.2835
+ description VL2835-VSI-AJS-PTOR-02-RADIOS
  ipv6 enable
  ipv6 address auto link-local
  statistic enable
  commit
- user-vlan 3110 qinq 2742
+ user-vlan 1003 qinq 2835
 quit
  pppoe-server bind Virtual-Template 1
  ipv6 nd autoconfig managed-address-flag
@@ -88,32 +88,32 @@ quit
  #
 #
 ---------- TERCEIRO SWITCH COM F1A ----------
-vsi VL2742-VSI-CPO-LAT-01-RADIOS
+vsi VL2835-VSI-AJS-PTOR-02-RADIOS
  pwsignal bgp
-  route-distinguisher 28198:12742
-  vpn-target 28198:12742 import-extcommunity
-  vpn-target 28198:12742 export-extcommunity
+  route-distinguisher 28198:12835
+  vpn-target 28198:12835 import-extcommunity
+  vpn-target 28198:12835 export-extcommunity
   site 4 range 5 default-offset 1
 
-vlan 2742
-description VL2742-VSI-CPO-LAT-01-RADIOS
+vlan 2835
+description VL2835-VSI-AJS-PTOR-02-RADIOS
 quit
 
-interface vlanif 2742
-description VL2742-VSI-CPO-LAT-01-RADIOS
-l2 binding vsi VL2742-VSI-CPO-LAT-01-RADIOS
+interface vlanif 2835
+description VL2835-VSI-AJS-PTOR-02-RADIOS
+l2 binding vsi VL2835-VSI-AJS-PTOR-02-RADIOS
 
-interface Eth-Trunk2
-port hybrid tagged vlan 2742
+interface 
+port hybrid tagged vlan 28352835
 
----------- TERCEIRO F1A DVL-VSA-01-BNG-014 ----------
-interface Eth-Trunk0.2742
- description VL2742-VSI-CPO-LAT-01-RADIOS
+---------- TERCEIRO F1A LPT-CEN-01-BNG-004 ----------
+interface Eth-Trunk0.2835
+ description VL2835-VSI-AJS-PTOR-02-RADIOS
  ipv6 enable
  ipv6 address auto link-local
  statistic enable
  commit
- user-vlan 3110 qinq 2742
+ user-vlan 1003 qinq 2835
 quit
  pppoe-server bind Virtual-Template 1
  ipv6 nd autoconfig managed-address-flag
@@ -125,3 +125,45 @@ quit
   access-delay 100
  #
 #
+---------- PRIMEIRO SWITCH ----------
+vsi VL2501-VSI-TESTE-02
+ pwsignal bgp
+  route-distinguisher 28198:32501
+  vpn-target 28198:32501 import-extcommunity
+  vpn-target 28198:32501 export-extcommunity
+  site 1 range 5 default-offset 1
+
+
+interface <function get_interface at 0x00000174EBC1E660>.2501
+    description VL2501-VSI-TESTE-02
+ qinq stacking vid 1010 pe-vid 2501
+ l2 binding vsi VL2501-VSI-TESTE-02
+
+---------- PRIMEIRO SWITCH ----------
+vsi VL4000-VSI-TESTE-02
+ pwsignal bgp
+  route-distinguisher 28198:14000
+  vpn-target 28198:14000 import-extcommunity
+  vpn-target 28198:14000 export-extcommunity
+  site 1 range 5 default-offset 1
+
+
+interface XGigabitEthernet 0/0/15.4000
+    description VL4000-VSI-TESTE-02
+ qinq stacking vid 1010 pe-vid 4000
+ l2 binding vsi VL4000-VSI-TESTE-02
+
+---------- PRIMEIRO SWITCH ----------
+vsi VL4000-VSI-TESTE-02
+ pwsignal bgp
+  route-distinguisher 28198:14000
+  vpn-target 28198:14000 import-extcommunity
+  vpn-target 28198:14000 export-extcommunity
+  site 1 range 5 default-offset 1
+
+
+interface XGigabitEthernet 0/0/15.4000
+    description VL4000-VSI-TESTE-02
+ qinq stacking vid 1010 pe-vid 4000
+ l2 binding vsi VL4000-VSI-TESTE-02
+
