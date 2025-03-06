@@ -1,0 +1,140 @@
+
+----------------------------------- PRIMEIRO SWITCH COM CLIENTES -----------------------------------
+
+vsi VL3030-VSI-JPR-CEN-01-GPON-004
+ pwsignal bgp
+  route-distinguisher 28198:13030
+  vpn-target 28198:13030 import-extcommunity
+  vpn-target 28198:13030 export-extcommunity
+  site 1 range 5 default-offset 1
+
+
+interface XGigabitEthernet 0/0/9.3030
+    description VL3030-VSI-JPR-CEN-01-GPON-004
+ qinq stacking vid 15 pe-vid 3030
+ l2 binding vsi VL3030-VSI-JPR-CEN-01-GPON-004
+
+
+        ----------------------------------- SEGUNDO SWITCH -----------------------------------
+
+vsi VL3030-VSI-JPR-CEN-01-GPON-004
+ pwsignal bgp
+  route-distinguisher 28198:13030
+  vpn-target 28198:13030 import-extcommunity
+  vpn-target 28198:13030 export-extcommunity
+  mtu-negotiate disable
+  site 2 range 5 default-offset 1
+
+vlan 3030
+description VL3030-VSI-JPR-CEN-01-GPON-004
+quit
+
+interface vlanif 3030
+description VL3030-VSI-JPR-CEN-01-GPON-004
+l2 binding vsi VL3030-VSI-JPR-CEN-01-GPON-004
+
+interface Eth-Trunk2
+port hybrid tagged vlan 3030
+
+
+----------------------------------- PRIMEIRO F1A DVL-VSA-01-BNG-014 -----------------------------------
+
+interface Eth-Trunk0.3030
+ description VL3030-VSI-JPR-CEN-01-GPON-004
+ ipv6 enable
+ ipv6 address auto link-local
+ statistic enable
+ commit
+ user-vlan 15 qinq 3030
+quit
+ pppoe-server bind Virtual-Template 1
+ ipv6 nd autoconfig managed-address-flag
+ ipv6 nd autoconfig other-flag
+ commit
+ bas
+ #
+  access-type layer2-subscriber default-domain authentication sempreinternet
+ #
+#
+
+        ----------------------------------- TERCEIRO SWITCH -----------------------------------
+
+set routing-instances VL3030-VSI-JPR-CEN-01-GPON-004 instance-type virtual-switch
+set routing-instances VL3030-VSI-JPR-CEN-01-GPON-004 protocols vpls site 2 site-identifier 2
+set routing-instances VL3030-VSI-JPR-CEN-01-GPON-004 protocols vpls site-range 5
+set routing-instances VL3030-VSI-JPR-CEN-01-GPON-004 protocols vpls no-tunnel-services
+set routing-instances VL3030-VSI-JPR-CEN-01-GPON-004 route-distinguisher 28198:13030
+set routing-instances VL3030-VSI-JPR-CEN-01-GPON-004 vrf-target target:28198:13030
+set routing-instances VL3030-VSI-JPR-CEN-01-GPON-004 vlans VL3030-VSI-JPR-CEN-01-GPON-004 vlan-id 3030
+set routing-instances VL3030-VSI-JPR-CEN-01-GPON-004 vlans VL3030-VSI-JPR-CEN-01-GPON-004 interface ae6.3030
+
+set interfaces ae6 unit 3030 description VL3030-VSI-JPR-CEN-01-GPON-004
+set interfaces ae6 unit 3030 encapsulation vlan-vpls
+set interfaces ae6 unit 3030 vlan-id 3030
+
+set vlans VL3030-VSI-JPR-CEN-01-GPON-004 description VL3030-VSI-JPR-CEN-01-GPON-004
+set vlans VL3030-VSI-JPR-CEN-01-GPON-004 vlan-id 3030
+
+
+        ----------------------------------- SEGUNDO F1A LPT-CEN-01-BNG-004 -----------------------------------
+interface Eth-Trunk0.3030
+ description VL3030-VSI-JPR-CEN-01-GPON-004
+ ipv6 enable
+ ipv6 address auto link-local
+ statistic enable
+ commit
+ user-vlan 15 qinq 3030
+quit
+ pppoe-server bind Virtual-Template 1
+ ipv6 nd autoconfig managed-address-flag
+ ipv6 nd autoconfig other-flag
+ commit
+ bas
+ #
+  access-type layer2-subscriber default-domain authentication sempreinternet
+  access-delay 100
+ #
+#
+
+        ----------------------------------- TERCEIRO SWITCH -----------------------------------
+
+vsi VL3030-VSI-JPR-CEN-01-GPON-004
+ pwsignal bgp
+  route-distinguisher 28198:13030
+  vpn-target 28198:13030 import-extcommunity
+  vpn-target 28198:13030 export-extcommunity
+  mtu-negotiate disable
+  site 2 range 5 default-offset 1
+
+vlan 3030
+description VL3030-VSI-JPR-CEN-01-GPON-004
+quit
+
+interface vlanif 3030
+description VL3030-VSI-JPR-CEN-01-GPON-004
+l2 binding vsi VL3030-VSI-JPR-CEN-01-GPON-004
+
+interface Eth-Trunk2
+port hybrid tagged vlan 3030
+
+
+        ----------------------------------- TERCEIRO F1A CEM-TLP-01-BNG-009 -----------------------------------
+
+interface Eth-Trunk0.3030
+ description VL3030-VSI-JPR-CEN-01-GPON-004
+ ipv6 enable
+ ipv6 address auto link-local
+ statistic enable
+ commit
+ user-vlan 15 qinq 3030
+quit
+ pppoe-server bind Virtual-Template 1
+ ipv6 nd autoconfig managed-address-flag
+ ipv6 nd autoconfig other-flag
+ commit
+ bas
+ #
+  access-type layer2-subscriber default-domain authentication sempreinternet
+  access-delay 100
+ #
+#

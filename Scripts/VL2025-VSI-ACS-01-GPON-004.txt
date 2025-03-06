@@ -1,0 +1,139 @@
+
+---------- PRIMEIRO SWITCH COM CLIENTES ----------
+
+vsi VL2025-VSI-ACS-01-GPON-004
+ pwsignal bgp
+  route-distinguisher 28198:12025
+  vpn-target 28198:12025 import-extcommunity
+  vpn-target 28198:12025 export-extcommunity
+  site 1 range 5 default-offset 1
+
+
+interface XGigabitEthernet 0/0/10.2025
+    description VL2025-VSI-ACS-01-GPON-004
+ qinq stacking vid 10 pe-vid 2025
+ l2 binding vsi VL2025-VSI-ACS-01-GPON-004
+
+
+        ---------- SEGUNDO SWITCH ----------
+
+vsi VL2025-VSI-ACS-01-GPON-004
+ pwsignal bgp
+  route-distinguisher 28198:12025
+  vpn-target 28198:12025 import-extcommunity
+  vpn-target 28198:12025 export-extcommunity
+  mtu-negotiate disable
+  site 2 range 5 default-offset 1
+
+vlan 2025
+description VL2025-VSI-ACS-01-GPON-004
+quit
+
+interface vlanif 2025
+description VL2025-VSI-ACS-01-GPON-004
+l2 binding vsi VL2025-VSI-ACS-01-GPON-004
+
+interface Eth-Trunk6
+port trunk allow-pass vlan 2025
+
+
+---------- PRIMEIRO F1A BDP-CEN-01-BNG-005 ----------
+
+interface Eth-Trunk0.2025
+ description VL2025-VSI-ACS-01-GPON-004
+ ipv6 enable
+ ipv6 address auto link-local
+ statistic enable
+ commit
+ user-vlan 10 qinq 2025
+quit
+ pppoe-server bind Virtual-Template 1
+ ipv6 nd autoconfig managed-address-flag
+ ipv6 nd autoconfig other-flag
+ commit
+ bas
+ #
+  access-type layer2-subscriber default-domain authentication sempreinternet
+ #
+#
+
+        ---------- TERCEIRO SWITCH ----------
+
+vsi VL2025-VSI-ACS-01-GPON-004
+ pwsignal bgp
+  route-distinguisher 28198:12025
+  vpn-target 28198:12025 import-extcommunity
+  vpn-target 28198:12025 export-extcommunity
+  mtu-negotiate disable
+  site 2 range 5 default-offset 1
+
+vlan 2025
+description VL2025-VSI-ACS-01-GPON-004
+quit
+
+interface vlanif 2025
+description VL2025-VSI-ACS-01-GPON-004
+l2 binding vsi VL2025-VSI-ACS-01-GPON-004
+
+interface Eth-Trunk6
+port trunk allow-pass vlan 2025
+
+
+        ---------- SEGUNDO F1A PDS-JARF-01-BNG-007 ----------
+interface Eth-Trunk0.2025
+ description VL2025-VSI-ACS-01-GPON-004
+ ipv6 enable
+ ipv6 address auto link-local
+ statistic enable
+ commit
+ user-vlan 10 qinq 2025
+quit
+ pppoe-server bind Virtual-Template 1
+ ipv6 nd autoconfig managed-address-flag
+ ipv6 nd autoconfig other-flag
+ commit
+ bas
+ #
+  access-type layer2-subscriber default-domain authentication sempreinternet
+  access-delay 100
+ #
+#
+
+        ---------- TERCEIRO SWITCH ----------
+
+set routing-instances VL2025-VSI-ACS-01-GPON-004 instance-type virtual-switch
+set routing-instances VL2025-VSI-ACS-01-GPON-004 protocols vpls site 2 site-identifier 2
+set routing-instances VL2025-VSI-ACS-01-GPON-004 protocols vpls site-range 5
+set routing-instances VL2025-VSI-ACS-01-GPON-004 protocols vpls no-tunnel-services
+set routing-instances VL2025-VSI-ACS-01-GPON-004 route-distinguisher 28198:12025
+set routing-instances VL2025-VSI-ACS-01-GPON-004 vrf-target target:28198:12025
+set routing-instances VL2025-VSI-ACS-01-GPON-004 vlans VL2025-VSI-ACS-01-GPON-004 vlan-id 2025
+set routing-instances VL2025-VSI-ACS-01-GPON-004 vlans VL2025-VSI-ACS-01-GPON-004 interface ae6.2025
+
+set interfaces ae6 unit 2025 description VL2025-VSI-ACS-01-GPON-004
+set interfaces ae6 unit 2025 encapsulation vlan-vpls
+set interfaces ae6 unit 2025 vlan-id 2025
+
+set vlans VL2025-VSI-ACS-01-GPON-004 description VL2025-VSI-ACS-01-GPON-004
+set vlans VL2025-VSI-ACS-01-GPON-004 vlan-id 2025
+
+
+        ---------- TERCEIRO F1A LPT-CEN-01-BNG-004 ----------
+interface Eth-Trunk0.2025
+ description VL2025-VSI-ACS-01-GPON-004
+ ipv6 enable
+ ipv6 address auto link-local
+ statistic enable
+ commit
+ user-vlan 10 qinq 2025
+quit
+ pppoe-server bind Virtual-Template 1
+ ipv6 nd autoconfig managed-address-flag
+ ipv6 nd autoconfig other-flag
+ commit
+ bas
+ #
+  access-type layer2-subscriber default-domain authentication sempreinternet
+  access-delay 100
+ #
+#

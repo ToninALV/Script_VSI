@@ -1,0 +1,140 @@
+
+----------------------------------- PRIMEIRO SWITCH COM CLIENTES -----------------------------------
+
+vsi VL2521-VSI-ACS-CEN-01-RADIOS
+ pwsignal bgp
+  route-distinguisher 28198:12521
+  vpn-target 28198:12521 import-extcommunity
+  vpn-target 28198:12521 export-extcommunity
+  site 1 range 5 default-offset 1
+
+
+interface XGigabitEthernet 0/0/5.2521
+    description VL2521-VSI-ACS-CEN-01-RADIOS
+ qinq stacking vid 10 pe-vid 2521
+ l2 binding vsi VL2521-VSI-ACS-CEN-01-RADIOS
+
+
+        ----------------------------------- SEGUNDO SWITCH -----------------------------------
+
+vsi VL2521-VSI-ACS-CEN-01-RADIOS
+ pwsignal bgp
+  route-distinguisher 28198:12521
+  vpn-target 28198:12521 import-extcommunity
+  vpn-target 28198:12521 export-extcommunity2025
+  site 2 range 5 default-offset 1
+
+vlan 2521
+description VL2521-VSI-ACS-CEN-01-RADIOS
+quit
+
+interface vlanif 2521
+description VL2521-VSI-ACS-CEN-01-RADIOS
+l2 binding vsi VL2521-VSI-ACS-CEN-01-RADIOS
+
+interface Eth-Trunk15
+port hybrid tagged vlan 2521
+
+
+----------------------------------- PRIMEIRO F1A CEM-TLP-01-BNG-009 -----------------------------------
+
+interface Eth-Trunk0.2521
+ description VL2521-VSI-ACS-CEN-01-RADIOS
+ ipv6 enable
+ ipv6 address auto link-local
+ statistic enable
+ commit
+ user-vlan 10 qinq 2521
+quit
+ pppoe-server bind Virtual-Template 1
+ ipv6 nd autoconfig managed-address-flag
+ ipv6 nd autoconfig other-flag
+ commit
+ bas
+ #
+  access-type layer2-subscriber default-domain authentication sempreinternet
+ #
+#
+
+        ----------------------------------- TERCEIRO SWITCH -----------------------------------
+
+vsi VL2521-VSI-ACS-CEN-01-RADIOS
+ pwsignal bgp
+  route-distinguisher 28198:12521
+  vpn-target 28198:12521 import-extcommunity
+  vpn-target 28198:12521 export-extcommunity2025
+  site 2 range 5 default-offset 1
+
+vlan 2521
+description VL2521-VSI-ACS-CEN-01-RADIOS
+quit
+
+interface vlanif 2521
+description VL2521-VSI-ACS-CEN-01-RADIOS
+l2 binding vsi VL2521-VSI-ACS-CEN-01-RADIOS
+
+interface Eth-Trunk15
+port hybrid tagged vlan 2521
+
+
+        ----------------------------------- SEGUNDO F1A DVL-VSA-01-BNG-014 -----------------------------------
+interface Eth-Trunk0.2521
+ description VL2521-VSI-ACS-CEN-01-RADIOS
+ ipv6 enable
+ ipv6 address auto link-local
+ statistic enable
+ commit
+ user-vlan 10 qinq 2521
+quit
+ pppoe-server bind Virtual-Template 1
+ ipv6 nd autoconfig managed-address-flag
+ ipv6 nd autoconfig other-flag
+ commit
+ bas
+ #
+  access-type layer2-subscriber default-domain authentication sempreinternet
+  access-delay 100
+ #
+#
+
+        ----------------------------------- QUARTO SWITCH -----------------------------------
+
+vsi VL2521-VSI-ACS-CEN-01-RADIOS
+ pwsignal bgp
+  route-distinguisher 28198:12521
+  vpn-target 28198:12521 import-extcommunity
+  vpn-target 28198:12521 export-extcommunity2025
+  site 2 range 5 default-offset 1
+
+vlan 2521
+description VL2521-VSI-ACS-CEN-01-RADIOS
+quit
+
+interface vlanif 2521
+description VL2521-VSI-ACS-CEN-01-RADIOS
+l2 binding vsi VL2521-VSI-ACS-CEN-01-RADIOS
+
+interface Eth-Trunk15
+port hybrid tagged vlan 2521
+
+
+        ----------------------------------- TERCEIRO F1A PDS-JARF-01-BNG-007 -----------------------------------
+
+interface Eth-Trunk0.2521
+ description VL2521-VSI-ACS-CEN-01-RADIOS
+ ipv6 enable
+ ipv6 address auto link-local
+ statistic enable
+ commit
+ user-vlan 10 qinq 2521
+quit
+ pppoe-server bind Virtual-Template 1
+ ipv6 nd autoconfig managed-address-flag
+ ipv6 nd autoconfig other-flag
+ commit
+ bas
+ #
+  access-type layer2-subscriber default-domain authentication sempreinternet
+  access-delay 100
+ #
+#
