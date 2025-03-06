@@ -1,7 +1,25 @@
 hostname = ["BDP-CEN-01-BNG-005","BET-GUA-01-BNG-003","CEM-TLP-01-BNG-009","DVL-VSA-01-BNG-014","CPO-ANT-01-BNG-004","IRP-CAN-01-BNG-005","LPT-CEN-01-BNG-004","PDS-JARF-01-BNG-007","SDT-CEN-01-BNG-005"]
 
 
-def menu (host):
+
+
+def menu ():
+
+    host = int(input("""
+----- LOCAIS DE AUTENTICAÇÃO -----
+          
+(1) BOM DESPACHO
+(2) BETIM
+(3) TELEPORTO
+(4) DIVINÓPOLIS
+(5) CAMPO BELO
+(6) IGARAPÉ
+(7) LAGOA DA PRATA
+(8) PERDÕES
+(9) SAMONTE
+                 
+Selecione o local de autenticação: """))
+
     match host:
         case 1: #BOM DESPACHO#
             interface_pppoe = "Eth-Trunk6"
