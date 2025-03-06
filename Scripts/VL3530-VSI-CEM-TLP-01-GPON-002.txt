@@ -1,0 +1,148 @@
+
+----------------------------------- PRIMEIRO SWITCH COM CLIENTES -----------------------------------
+
+vsi VL3530-VSI-CEM-TLP-01-GPON-002
+ pwsignal bgp
+  route-distinguisher 28198:13530
+  vpn-target 28198:13530 import-extcommunity
+  vpn-target 28198:13530 export-extcommunity
+  site 1 range 5 default-offset 1
+
+
+interface XGigabitEthernet 0/0/10.3530
+    description VL3530-VSI-CEM-TLP-01-GPON-002
+ qinq stacking vid 15 pe-vid 3530
+ qinq stacking vid 16 pe-vid 3530
+ qinq stacking vid 17 pe-vid 3530
+ l2 binding vsi VL3530-VSI-CEM-TLP-01-GPON-002
+
+
+        ----------------------------------- SEGUNDO SWITCH -----------------------------------
+
+vsi VL3530-VSI-CEM-TLP-01-GPON-002
+ pwsignal bgp
+  route-distinguisher 28198:13530
+  vpn-target 28198:13530 import-extcommunity
+  vpn-target 28198:13530 export-extcommunity
+  mtu-negotiate disable
+  site 2 range 5 default-offset 1
+
+vlan 3530
+description VL3530-VSI-CEM-TLP-01-GPON-002
+quit
+
+interface vlanif 3530
+description VL3530-VSI-CEM-TLP-01-GPON-002
+l2 binding vsi VL3530-VSI-CEM-TLP-01-GPON-002
+
+interface Eth-Trunk2
+port hybrid tagged vlan 3530
+
+
+----------------------------------- PRIMEIRO F1A DVL-VSA-01-BNG-014 -----------------------------------
+
+interface Eth-Trunk0.3530
+ description VL3530-VSI-CEM-TLP-01-GPON-002
+ ipv6 enable
+ ipv6 address auto link-local
+ statistic enable
+ commit
+ user-vlan 15 qinq 3530
+ user-vlan 16 qinq 3530
+ user-vlan 17 qinq 3530
+quit
+ pppoe-server bind Virtual-Template 1
+ ipv6 nd autoconfig managed-address-flag
+ ipv6 nd autoconfig other-flag
+ commit
+ bas
+ #
+  access-type layer2-subscriber default-domain authentication sempreinternet
+ #
+#
+
+        ----------------------------------- TERCEIRO SWITCH -----------------------------------
+
+set routing-instances VL3530-VSI-CEM-TLP-01-GPON-002 instance-type virtual-switch
+set routing-instances VL3530-VSI-CEM-TLP-01-GPON-002 protocols vpls site 2 site-identifier 2
+set routing-instances VL3530-VSI-CEM-TLP-01-GPON-002 protocols vpls site-range 5
+set routing-instances VL3530-VSI-CEM-TLP-01-GPON-002 protocols vpls no-tunnel-services
+set routing-instances VL3530-VSI-CEM-TLP-01-GPON-002 route-distinguisher 28198:13530
+set routing-instances VL3530-VSI-CEM-TLP-01-GPON-002 vrf-target target:28198:13530
+set routing-instances VL3530-VSI-CEM-TLP-01-GPON-002 vlans VL3530-VSI-CEM-TLP-01-GPON-002 vlan-id 3530
+set routing-instances VL3530-VSI-CEM-TLP-01-GPON-002 vlans VL3530-VSI-CEM-TLP-01-GPON-002 interface ae6.3530
+
+set interfaces ae6 unit 3530 description VL3530-VSI-CEM-TLP-01-GPON-002
+set interfaces ae6 unit 3530 encapsulation vlan-vpls
+set interfaces ae6 unit 3530 vlan-id 3530
+
+set vlans VL3530-VSI-CEM-TLP-01-GPON-002 description VL3530-VSI-CEM-TLP-01-GPON-002
+set vlans VL3530-VSI-CEM-TLP-01-GPON-002 vlan-id 3530
+
+
+        ----------------------------------- SEGUNDO F1A LPT-CEN-01-BNG-004 -----------------------------------
+interface Eth-Trunk0.3530
+ description VL3530-VSI-CEM-TLP-01-GPON-002
+ ipv6 enable
+ ipv6 address auto link-local
+ statistic enable
+ commit
+ user-vlan 15 qinq 3530
+ user-vlan 16 qinq 3530
+ user-vlan 17 qinq 3530
+quit
+ pppoe-server bind Virtual-Template 1
+ ipv6 nd autoconfig managed-address-flag
+ ipv6 nd autoconfig other-flag
+ commit
+ bas
+ #
+  access-type layer2-subscriber default-domain authentication sempreinternet
+  access-delay 100
+ #
+#
+
+        ----------------------------------- QUARTO SWITCH -----------------------------------
+
+vsi VL3530-VSI-CEM-TLP-01-GPON-002
+ pwsignal bgp
+  route-distinguisher 28198:13530
+  vpn-target 28198:13530 import-extcommunity
+  vpn-target 28198:13530 export-extcommunity
+  mtu-negotiate disable
+  site 2 range 5 default-offset 1
+
+vlan 3530
+description VL3530-VSI-CEM-TLP-01-GPON-002
+quit
+
+interface vlanif 3530
+description VL3530-VSI-CEM-TLP-01-GPON-002
+l2 binding vsi VL3530-VSI-CEM-TLP-01-GPON-002
+
+interface Eth-Trunk2
+port hybrid tagged vlan 3530
+
+
+        ----------------------------------- TERCEIRO F1A CEM-TLP-01-BNG-009 -----------------------------------
+
+interface Eth-Trunk0.3530
+ description VL3530-VSI-CEM-TLP-01-GPON-002
+ ipv6 enable
+ ipv6 address auto link-local
+ statistic enable
+ commit
+ user-vlan 15 qinq 3530
+ user-vlan 16 qinq 3530
+ user-vlan 17 qinq 3530
+quit
+ pppoe-server bind Virtual-Template 1
+ ipv6 nd autoconfig managed-address-flag
+ ipv6 nd autoconfig other-flag
+ commit
+ bas
+ #
+  access-type layer2-subscriber default-domain authentication sempreinternet
+  access-delay 100
+ #
+#
