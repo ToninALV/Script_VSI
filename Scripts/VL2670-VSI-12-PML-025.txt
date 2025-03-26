@@ -1,0 +1,152 @@
+
+----------------------------------- PRIMEIRO SWITCH COM CLIENTES -----------------------------------
+
+vsi VL2670-VSI-12-PML-025
+ pwsignal bgp
+  route-distinguisher 28198:12670
+  vpn-target 28198:12670 import-extcommunity
+  vpn-target 28198:12670 export-extcommunity
+  site 1 range 5 default-offset 1
+
+
+interface XGigabitEthernet 0/0/5.2670
+    description VL2670-VSI-12-PML-025
+ qinq stacking vid 10 pe-vid 2670
+ qinq stacking vid 11 pe-vid 2670
+ qinq stacking vid 12 pe-vid 2670
+ qinq stacking vid 13 pe-vid 2670
+ l2 binding vsi VL2670-VSI-12-PML-025
+
+
+        ----------------------------------- SEGUNDO SWITCH -----------------------------------
+
+vsi VL2670-VSI-12-PML-025
+ pwsignal bgp
+  route-distinguisher 28198:12670
+  vpn-target 28198:12670 import-extcommunity
+  vpn-target 28198:12670 export-extcommunity2025
+  site 2 range 5 default-offset 1
+
+vlan 2670
+description VL2670-VSI-12-PML-025
+quit
+
+interface vlanif 2670
+description VL2670-VSI-12-PML-025
+l2 binding vsi VL2670-VSI-12-PML-025
+
+interface Eth-Trunk15
+port hybrid tagged vlan 2670
+
+
+----------------------------------- PRIMEIRO F1A CEM-TLP-01-BNG-009 -----------------------------------
+
+interface Eth-Trunk0.2670
+ description VL2670-VSI-12-PML-025
+ ipv6 enable
+ ipv6 address auto link-local
+ statistic enable
+ commit
+ user-vlan 10 qinq 2670
+ user-vlan 11 qinq 2670
+ user-vlan 12 qinq 2670
+ user-vlan 13 qinq 2670
+quit
+ pppoe-server bind Virtual-Template 1
+ ipv6 nd autoconfig managed-address-flag
+ ipv6 nd autoconfig other-flag
+ commit
+ bas
+ #
+  access-type layer2-subscriber default-domain authentication sempreinternet
+ #
+#
+
+        ----------------------------------- TERCEIRO SWITCH -----------------------------------
+
+vsi VL2670-VSI-12-PML-025
+ pwsignal bgp
+  route-distinguisher 28198:12670
+  vpn-target 28198:12670 import-extcommunity
+  vpn-target 28198:12670 export-extcommunity2025
+  site 2 range 5 default-offset 1
+
+vlan 2670
+description VL2670-VSI-12-PML-025
+quit
+
+interface vlanif 2670
+description VL2670-VSI-12-PML-025
+l2 binding vsi VL2670-VSI-12-PML-025
+
+interface Eth-Trunk15
+port hybrid tagged vlan 2670
+
+
+        ----------------------------------- SEGUNDO F1A DVL-VSA-01-BNG-014 -----------------------------------
+interface Eth-Trunk0.2670
+ description VL2670-VSI-12-PML-025
+ ipv6 enable
+ ipv6 address auto link-local
+ statistic enable
+ commit
+ user-vlan 10 qinq 2670
+ user-vlan 11 qinq 2670
+ user-vlan 12 qinq 2670
+ user-vlan 13 qinq 2670
+quit
+ pppoe-server bind Virtual-Template 1
+ ipv6 nd autoconfig managed-address-flag
+ ipv6 nd autoconfig other-flag
+ commit
+ bas
+ #
+  access-type layer2-subscriber default-domain authentication sempreinternet
+  access-delay 100
+ #
+#
+
+        ----------------------------------- QUARTO SWITCH -----------------------------------
+
+vsi VL2670-VSI-12-PML-025
+ pwsignal bgp
+  route-distinguisher 28198:12670
+  vpn-target 28198:12670 import-extcommunity
+  vpn-target 28198:12670 export-extcommunity2025
+  site 2 range 5 default-offset 1
+
+vlan 2670
+description VL2670-VSI-12-PML-025
+quit
+
+interface vlanif 2670
+description VL2670-VSI-12-PML-025
+l2 binding vsi VL2670-VSI-12-PML-025
+
+interface Eth-Trunk15
+port hybrid tagged vlan 2670
+
+
+        ----------------------------------- TERCEIRO F1A PDS-JARF-01-BNG-007 -----------------------------------
+
+interface Eth-Trunk0.2670
+ description VL2670-VSI-12-PML-025
+ ipv6 enable
+ ipv6 address auto link-local
+ statistic enable
+ commit
+ user-vlan 10 qinq 2670
+ user-vlan 11 qinq 2670
+ user-vlan 12 qinq 2670
+ user-vlan 13 qinq 2670
+quit
+ pppoe-server bind Virtual-Template 1
+ ipv6 nd autoconfig managed-address-flag
+ ipv6 nd autoconfig other-flag
+ commit
+ bas
+ #
+  access-type layer2-subscriber default-domain authentication sempreinternet
+  access-delay 100
+ #
+#

@@ -1,0 +1,148 @@
+
+----------------------------------- PRIMEIRO SWITCH COM CLIENTES -----------------------------------
+
+vsi VL2500-VSI-LPT-CEN-01-GPON-003
+ pwsignal bgp
+  route-distinguisher 28198:12500
+  vpn-target 28198:12500 import-extcommunity
+  vpn-target 28198:12500 export-extcommunity
+  site 1 range 5 default-offset 1
+
+
+interface XGigabitEthernet 0/0/15.2500
+    description VL2500-VSI-LPT-CEN-01-GPON-003
+ qinq stacking vid 10 pe-vid 2500
+ qinq stacking vid 11 pe-vid 2500
+ qinq stacking vid 12 pe-vid 2500
+ l2 binding vsi VL2500-VSI-LPT-CEN-01-GPON-003
+
+
+        ----------------------------------- SEGUNDO SWITCH -----------------------------------
+
+vsi VL2500-VSI-LPT-CEN-01-GPON-003
+ pwsignal bgp
+  route-distinguisher 28198:12500
+  vpn-target 28198:12500 import-extcommunity
+  vpn-target 28198:12500 export-extcommunity
+  mtu-negotiate disable
+  site 2 range 5 default-offset 1
+
+vlan 2500
+description VL2500-VSI-LPT-CEN-01-GPON-003
+quit
+
+interface vlanif 2500
+description VL2500-VSI-LPT-CEN-01-GPON-003
+l2 binding vsi VL2500-VSI-LPT-CEN-01-GPON-003
+
+interface Eth-Trunk2
+port trunk allow-pass vlan 2500
+
+
+----------------------------------- PRIMEIRO F1A PDS-JARF-01-BNG-007 -----------------------------------
+
+interface Eth-Trunk0.2500
+ description VL2500-VSI-LPT-CEN-01-GPON-003
+ ipv6 enable
+ ipv6 address auto link-local
+ statistic enable
+ commit
+ user-vlan 10 qinq 2500
+ user-vlan 11 qinq 2500
+ user-vlan 12 qinq 2500
+quit
+ pppoe-server bind Virtual-Template 1
+ ipv6 nd autoconfig managed-address-flag
+ ipv6 nd autoconfig other-flag
+ commit
+ bas
+ #
+  access-type layer2-subscriber default-domain authentication sempreinternet
+ #
+#
+
+        ----------------------------------- TERCEIRO SWITCH -----------------------------------
+
+set routing-instances VL2500-VSI-LPT-CEN-01-GPON-003 instance-type virtual-switch
+set routing-instances VL2500-VSI-LPT-CEN-01-GPON-003 protocols vpls site 2 site-identifier 2
+set routing-instances VL2500-VSI-LPT-CEN-01-GPON-003 protocols vpls site-range 5
+set routing-instances VL2500-VSI-LPT-CEN-01-GPON-003 protocols vpls no-tunnel-services
+set routing-instances VL2500-VSI-LPT-CEN-01-GPON-003 route-distinguisher 28198:12500
+set routing-instances VL2500-VSI-LPT-CEN-01-GPON-003 vrf-target target:28198:12500
+set routing-instances VL2500-VSI-LPT-CEN-01-GPON-003 vlans VL2500-VSI-LPT-CEN-01-GPON-003 vlan-id 2500
+set routing-instances VL2500-VSI-LPT-CEN-01-GPON-003 vlans VL2500-VSI-LPT-CEN-01-GPON-003 interface ae6.2500
+
+set interfaces ae6 unit 2500 description VL2500-VSI-LPT-CEN-01-GPON-003
+set interfaces ae6 unit 2500 encapsulation vlan-vpls
+set interfaces ae6 unit 2500 vlan-id 2500
+
+set vlans VL2500-VSI-LPT-CEN-01-GPON-003 description VL2500-VSI-LPT-CEN-01-GPON-003
+set vlans VL2500-VSI-LPT-CEN-01-GPON-003 vlan-id 2500
+
+
+        ----------------------------------- SEGUNDO F1A LPT-CEN-01-BNG-004 -----------------------------------
+interface Eth-Trunk0.2500
+ description VL2500-VSI-LPT-CEN-01-GPON-003
+ ipv6 enable
+ ipv6 address auto link-local
+ statistic enable
+ commit
+ user-vlan 10 qinq 2500
+ user-vlan 11 qinq 2500
+ user-vlan 12 qinq 2500
+quit
+ pppoe-server bind Virtual-Template 1
+ ipv6 nd autoconfig managed-address-flag
+ ipv6 nd autoconfig other-flag
+ commit
+ bas
+ #
+  access-type layer2-subscriber default-domain authentication sempreinternet
+  access-delay 100
+ #
+#
+
+        ----------------------------------- QUARTO SWITCH -----------------------------------
+
+vsi VL2500-VSI-LPT-CEN-01-GPON-003
+ pwsignal bgp
+  route-distinguisher 28198:12500
+  vpn-target 28198:12500 import-extcommunity
+  vpn-target 28198:12500 export-extcommunity
+  mtu-negotiate disable
+  site 2 range 5 default-offset 1
+
+vlan 2500
+description VL2500-VSI-LPT-CEN-01-GPON-003
+quit
+
+interface vlanif 2500
+description VL2500-VSI-LPT-CEN-01-GPON-003
+l2 binding vsi VL2500-VSI-LPT-CEN-01-GPON-003
+
+interface Eth-Trunk2
+port trunk allow-pass vlan 2500
+
+
+        ----------------------------------- TERCEIRO F1A DVL-VSA-01-BNG-014 -----------------------------------
+
+interface Eth-Trunk0.2500
+ description VL2500-VSI-LPT-CEN-01-GPON-003
+ ipv6 enable
+ ipv6 address auto link-local
+ statistic enable
+ commit
+ user-vlan 10 qinq 2500
+ user-vlan 11 qinq 2500
+ user-vlan 12 qinq 2500
+quit
+ pppoe-server bind Virtual-Template 1
+ ipv6 nd autoconfig managed-address-flag
+ ipv6 nd autoconfig other-flag
+ commit
+ bas
+ #
+  access-type layer2-subscriber default-domain authentication sempreinternet
+  access-delay 100
+ #
+#

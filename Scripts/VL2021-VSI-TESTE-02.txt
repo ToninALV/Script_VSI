@@ -1,0 +1,140 @@
+
+----------------------------------- PRIMEIRO SWITCH COM CLIENTES -----------------------------------
+
+vsi VL2021-VSI-TESTE-02
+ pwsignal bgp
+  route-distinguisher 28198:12021
+  vpn-target 28198:12021 import-extcommunity
+  vpn-target 28198:12021 export-extcommunity
+  site 1 range 5 default-offset 1
+
+
+interface XGigabitEthernet 0/0/10.2021
+    description VL2021-VSI-TESTE-02
+ qinq stacking vid 50 pe-vid 2021
+ l2 binding vsi VL2021-VSI-TESTE-02
+
+
+        ----------------------------------- SEGUNDO SWITCH -----------------------------------
+
+vsi VL2021-VSI-TESTE-02
+ pwsignal bgp
+  route-distinguisher 28198:12021
+  vpn-target 28198:12021 import-extcommunity
+  vpn-target 28198:12021 export-extcommunity
+  mtu-negotiate disable
+  site 2 range 5 default-offset 1
+
+vlan 2021
+description VL2021-VSI-TESTE-02
+quit
+
+interface vlanif 2021
+description VL2021-VSI-TESTE-02
+l2 binding vsi VL2021-VSI-TESTE-02
+
+interface Eth-Trunk6
+port trunk allow-pass vlan 2021
+
+
+----------------------------------- PRIMEIRO F1A BDP-CEN-01-BNG-005 -----------------------------------
+
+interface Eth-Trunk0.2021
+ description VL2021-VSI-TESTE-02
+ ipv6 enable
+ ipv6 address auto link-local
+ statistic enable
+ commit
+ user-vlan 50 qinq 2021
+quit
+ pppoe-server bind Virtual-Template 1
+ ipv6 nd autoconfig managed-address-flag
+ ipv6 nd autoconfig other-flag
+ commit
+ bas
+ #
+  access-type layer2-subscriber default-domain authentication sempreinternet
+ #
+#
+
+        ----------------------------------- TERCEIRO SWITCH -----------------------------------
+
+vsi VL2021-VSI-TESTE-02
+ pwsignal bgp
+  route-distinguisher 28198:12021
+  vpn-target 28198:12021 import-extcommunity
+  vpn-target 28198:12021 export-extcommunity
+  mtu-negotiate disable
+  site 2 range 5 default-offset 1
+
+vlan 2021
+description VL2021-VSI-TESTE-02
+quit
+
+interface vlanif 2021
+description VL2021-VSI-TESTE-02
+l2 binding vsi VL2021-VSI-TESTE-02
+
+interface Eth-Trunk6
+port trunk allow-pass vlan 2021
+
+
+        ----------------------------------- SEGUNDO F1A PDS-JARF-01-BNG-007 -----------------------------------
+interface Eth-Trunk0.2021
+ description VL2021-VSI-TESTE-02
+ ipv6 enable
+ ipv6 address auto link-local
+ statistic enable
+ commit
+ user-vlan 50 qinq 2021
+quit
+ pppoe-server bind Virtual-Template 1
+ ipv6 nd autoconfig managed-address-flag
+ ipv6 nd autoconfig other-flag
+ commit
+ bas
+ #
+  access-type layer2-subscriber default-domain authentication sempreinternet
+  access-delay 100
+ #
+#
+
+        ----------------------------------- QUARTO SWITCH -----------------------------------
+
+set routing-instances VL2021-VSI-TESTE-02 instance-type virtual-switch
+set routing-instances VL2021-VSI-TESTE-02 protocols vpls site 2 site-identifier 2
+set routing-instances VL2021-VSI-TESTE-02 protocols vpls site-range 5
+set routing-instances VL2021-VSI-TESTE-02 protocols vpls no-tunnel-services
+set routing-instances VL2021-VSI-TESTE-02 route-distinguisher 28198:12021
+set routing-instances VL2021-VSI-TESTE-02 vrf-target target:28198:12021
+set routing-instances VL2021-VSI-TESTE-02 vlans VL2021-VSI-TESTE-02 vlan-id 2021
+set routing-instances VL2021-VSI-TESTE-02 vlans VL2021-VSI-TESTE-02 interface ae6.2021
+
+set interfaces ae6 unit 2021 description VL2021-VSI-TESTE-02
+set interfaces ae6 unit 2021 encapsulation vlan-vpls
+set interfaces ae6 unit 2021 vlan-id 2021
+
+set vlans VL2021-VSI-TESTE-02 description VL2021-VSI-TESTE-02
+set vlans VL2021-VSI-TESTE-02 vlan-id 2021
+
+
+        ----------------------------------- TERCEIRO F1A LPT-CEN-01-BNG-004 -----------------------------------
+
+interface Eth-Trunk0.2021
+ description VL2021-VSI-TESTE-02
+ ipv6 enable
+ ipv6 address auto link-local
+ statistic enable
+ commit
+ user-vlan 50 qinq 2021
+quit
+ pppoe-server bind Virtual-Template 1
+ ipv6 nd autoconfig managed-address-flag
+ ipv6 nd autoconfig other-flag
+ commit
+ bas
+ #
+  access-type layer2-subscriber default-domain authentication sempreinternet
+  access-delay 100
+ #
+#

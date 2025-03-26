@@ -1,0 +1,148 @@
+
+----------------------------------- PRIMEIRO SWITCH COM CLIENTES -----------------------------------
+
+vsi VL3521-VSI-ACS-CEN-01-GPON-004
+ pwsignal bgp
+  route-distinguisher 28198:13521
+  vpn-target 28198:13521 import-extcommunity
+  vpn-target 28198:13521 export-extcommunity
+  site 1 range 5 default-offset 1
+
+
+interface XGigabitEthernet 0/0/15.3521
+    description VL3521-VSI-ACS-CEN-01-GPON-004
+ qinq stacking vid 50 pe-vid 3521
+ qinq stacking vid 51 pe-vid 3521
+ qinq stacking vid 52 pe-vid 3521
+ l2 binding vsi VL3521-VSI-ACS-CEN-01-GPON-004
+
+
+        ----------------------------------- SEGUNDO SWITCH -----------------------------------
+
+vsi VL3521-VSI-ACS-CEN-01-GPON-004
+ pwsignal bgp
+  route-distinguisher 28198:13521
+  vpn-target 28198:13521 import-extcommunity
+  vpn-target 28198:13521 export-extcommunity
+  mtu-negotiate disable
+  site 2 range 5 default-offset 1
+
+vlan 3521
+description VL3521-VSI-ACS-CEN-01-GPON-004
+quit
+
+interface vlanif 3521
+description VL3521-VSI-ACS-CEN-01-GPON-004
+l2 binding vsi VL3521-VSI-ACS-CEN-01-GPON-004
+
+interface Eth-Trunk6
+port trunk allow-pass vlan 3521
+
+
+----------------------------------- PRIMEIRO F1A BDP-CEN-01-BNG-005 -----------------------------------
+
+interface Eth-Trunk0.3521
+ description VL3521-VSI-ACS-CEN-01-GPON-004
+ ipv6 enable
+ ipv6 address auto link-local
+ statistic enable
+ commit
+ user-vlan 50 qinq 3521
+ user-vlan 51 qinq 3521
+ user-vlan 52 qinq 3521
+quit
+ pppoe-server bind Virtual-Template 1
+ ipv6 nd autoconfig managed-address-flag
+ ipv6 nd autoconfig other-flag
+ commit
+ bas
+ #
+  access-type layer2-subscriber default-domain authentication sempreinternet
+ #
+#
+
+        ----------------------------------- TERCEIRO SWITCH -----------------------------------
+
+vsi VL3521-VSI-ACS-CEN-01-GPON-004
+ pwsignal bgp
+  route-distinguisher 28198:13521
+  vpn-target 28198:13521 import-extcommunity
+  vpn-target 28198:13521 export-extcommunity
+  mtu-negotiate disable
+  site 2 range 5 default-offset 1
+
+vlan 3521
+description VL3521-VSI-ACS-CEN-01-GPON-004
+quit
+
+interface vlanif 3521
+description VL3521-VSI-ACS-CEN-01-GPON-004
+l2 binding vsi VL3521-VSI-ACS-CEN-01-GPON-004
+
+interface Eth-Trunk6
+port trunk allow-pass vlan 3521
+
+
+        ----------------------------------- SEGUNDO F1A PDS-JARF-01-BNG-007 -----------------------------------
+interface Eth-Trunk0.3521
+ description VL3521-VSI-ACS-CEN-01-GPON-004
+ ipv6 enable
+ ipv6 address auto link-local
+ statistic enable
+ commit
+ user-vlan 50 qinq 3521
+ user-vlan 51 qinq 3521
+ user-vlan 52 qinq 3521
+quit
+ pppoe-server bind Virtual-Template 1
+ ipv6 nd autoconfig managed-address-flag
+ ipv6 nd autoconfig other-flag
+ commit
+ bas
+ #
+  access-type layer2-subscriber default-domain authentication sempreinternet
+  access-delay 100
+ #
+#
+
+        ----------------------------------- QUARTO SWITCH -----------------------------------
+
+set routing-instances VL3521-VSI-ACS-CEN-01-GPON-004 instance-type virtual-switch
+set routing-instances VL3521-VSI-ACS-CEN-01-GPON-004 protocols vpls site 2 site-identifier 2
+set routing-instances VL3521-VSI-ACS-CEN-01-GPON-004 protocols vpls site-range 5
+set routing-instances VL3521-VSI-ACS-CEN-01-GPON-004 protocols vpls no-tunnel-services
+set routing-instances VL3521-VSI-ACS-CEN-01-GPON-004 route-distinguisher 28198:13521
+set routing-instances VL3521-VSI-ACS-CEN-01-GPON-004 vrf-target target:28198:13521
+set routing-instances VL3521-VSI-ACS-CEN-01-GPON-004 vlans VL3521-VSI-ACS-CEN-01-GPON-004 vlan-id 3521
+set routing-instances VL3521-VSI-ACS-CEN-01-GPON-004 vlans VL3521-VSI-ACS-CEN-01-GPON-004 interface ae6.3521
+
+set interfaces ae6 unit 3521 description VL3521-VSI-ACS-CEN-01-GPON-004
+set interfaces ae6 unit 3521 encapsulation vlan-vpls
+set interfaces ae6 unit 3521 vlan-id 3521
+
+set vlans VL3521-VSI-ACS-CEN-01-GPON-004 description VL3521-VSI-ACS-CEN-01-GPON-004
+set vlans VL3521-VSI-ACS-CEN-01-GPON-004 vlan-id 3521
+
+
+        ----------------------------------- TERCEIRO F1A LPT-CEN-01-BNG-004 -----------------------------------
+
+interface Eth-Trunk0.3521
+ description VL3521-VSI-ACS-CEN-01-GPON-004
+ ipv6 enable
+ ipv6 address auto link-local
+ statistic enable
+ commit
+ user-vlan 50 qinq 3521
+ user-vlan 51 qinq 3521
+ user-vlan 52 qinq 3521
+quit
+ pppoe-server bind Virtual-Template 1
+ ipv6 nd autoconfig managed-address-flag
+ ipv6 nd autoconfig other-flag
+ commit
+ bas
+ #
+  access-type layer2-subscriber default-domain authentication sempreinternet
+  access-delay 100
+ #
+#

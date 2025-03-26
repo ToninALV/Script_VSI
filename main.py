@@ -35,16 +35,13 @@ interface {interface}.{pevlan}
     description {service_name}"""
 
     qinq_lines = "\n".join([f" qinq stacking vid {cevlan} pe-vid {pevlan}" for cevlan in cevlan_list])
+    if conc_secondary == "LPT-CEN-01-MPLS" or conc_tertiary == "LPT-CEN-01-MPLS":
+        client_switch = f"{base_string}\n{qinq_lines}\n l2 binding vsi {service_name}\n\n" 
     mtu_disable_line = "mtu-negotiate disable"
     client_switch = f"{base_string}\n{qinq_lines}\n l2 binding vsi {service_name}\n\n"
 
 
     return client_switch
-
-def etrunk_switch(): #Switch etrunk, redundante, De onde vai sair os clientes
-
-
-    return None
     
 
 def second_switch(): #Segundo Switch. 2º ponto da VSI, linkado ao primeiro BNG
@@ -391,7 +388,9 @@ interface Eth-Trunk0.{pevlan}
 
 def make_script():
 
-    path01 = f"Scripts/{service_name}.txt"
+    ###path01 = f"Scripts/{service_name}.txt"
+    caminho_pasta = get_save_path()
+    caminho_arquivo = os.path.join(caminho_pasta, f"{service_name}.txt")
 
     switch_cliente = client_switch()
     primeiro_switch = second_switch()
@@ -401,7 +400,7 @@ def make_script():
     terceiro_switch = fourth_switch()
     terceiro_bng = third_bng()
 
-    with open(path01, 'w') as arquivo:
+    with open(caminho_arquivo, 'w') as arquivo:
             arquivo.write(switch_cliente)
             arquivo.write(primeiro_switch)
             arquivo.write(primeiro_bng)
@@ -409,6 +408,20 @@ def make_script():
             arquivo.write(segundo_bng)
             arquivo.write(terceiro_switch)
             arquivo.write(terceiro_bng)
+
+
+def resource_path(relative_path):
+    try:
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.path.abspath(".")
+    return os.path.join(base_path, relative_path)
+
+def get_save_path():
+    documentos = os.path.expanduser('~/Documents')
+    scripts_path = os.path.join(documentos, 'Scripts_VSI', 'Scripts')
+    os.makedirs(scripts_path, exist_ok=True)
+    return scripts_path
 
 
 make_script()
