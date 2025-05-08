@@ -164,7 +164,7 @@ def third_switch(): #Terceiro Switch, 4º ponto da VSI, Linkado ao Segundo BNG.
         base_string = f"""
         ----------------------------------- TERCEIRO SWITCH -----------------------------------\n
 set routing-instances {service_name} instance-type virtual-switch
-set routing-instances {service_name} protocols vpls site 2 site-identifier 2
+set routing-instances {service_name} protocols vpls site 4 site-identifier 4
 set routing-instances {service_name} protocols vpls site-range 5
 set routing-instances {service_name} protocols vpls no-tunnel-services
 set routing-instances {service_name} route-distinguisher {route_distinguisher}
@@ -191,7 +191,7 @@ vsi {service_name}
   vpn-target {route_distinguisher} import-extcommunity
   vpn-target {route_distinguisher} export-extcommunity
   mtu-negotiate disable
-  site 2 range 5 default-offset 1
+  site 4 range 5 default-offset 1
 
 vlan {pevlan}
 description {service_name}
@@ -220,7 +220,7 @@ vsi {service_name}
   route-distinguisher {route_distinguisher}
   vpn-target {route_distinguisher} import-extcommunity
   vpn-target {route_distinguisher} export-extcommunity2025
-  site 2 range 5 default-offset 1
+  site 4 range 5 default-offset 1
 
 vlan {pevlan}
 description {service_name}
@@ -277,7 +277,7 @@ def fourth_switch():
         base_string = f"""
         ----------------------------------- QUARTO SWITCH -----------------------------------\n
 set routing-instances {service_name} instance-type virtual-switch
-set routing-instances {service_name} protocols vpls site 2 site-identifier 2
+set routing-instances {service_name} protocols vpls site 5 site-identifier 5
 set routing-instances {service_name} protocols vpls site-range 5
 set routing-instances {service_name} protocols vpls no-tunnel-services
 set routing-instances {service_name} route-distinguisher {route_distinguisher}
@@ -304,7 +304,7 @@ vsi {service_name}
   vpn-target {route_distinguisher} import-extcommunity
   vpn-target {route_distinguisher} export-extcommunity
   mtu-negotiate disable
-  site 2 range 5 default-offset 1
+  site 5 range 5 default-offset 1
 
 vlan {pevlan}
 description {service_name}
@@ -333,7 +333,7 @@ vsi {service_name}
   route-distinguisher {route_distinguisher}
   vpn-target {route_distinguisher} import-extcommunity
   vpn-target {route_distinguisher} export-extcommunity2025
-  site 2 range 5 default-offset 1
+  site 5 range 5 default-offset 1
 
 vlan {pevlan}
 description {service_name}
